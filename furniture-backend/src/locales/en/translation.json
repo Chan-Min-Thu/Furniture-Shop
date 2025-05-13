@@ -1,0 +1,5 @@
+{
+  "welcome": "Welcome to Funrnitre Shop.",
+  "wrongPassword": "Your password is wrong.",
+  "changelanguage": "Successfully changed language - {{lang}}."
+}

@@ -1,0 +1,38 @@
+npm init -y 
+npm i typescript ts-node @types/node nodemon --save-dev
+npx tsc --init (tsc configuration)
+npm i -D jest ts-jest supertest @types/jest @types/supertest jest-environment-node
+npm i express@next dotenv cors helmet morgan jest-config
+npm i @types/express @types/cors @types/morgan
+npm i bcrypt compression express-rate-limit express-validator jsonwebtoken multer
+npm i @types/bcrypt @types/compression @types/jsonwebtoken @types/multer --save-dev
+
+
+initial migrate 
+    npx prisma migrate dev --name-init
+    npx prisma migrate dev --name-secondMigrate
+
+Add column 
+    npx prisma migrate dev
+
+column name change 
+    npx prisma migrate dev --create-only
+and then 
+    you need to change the in the migration file Rename Column  "primary name " to "wanna change name".
+
+if you need to develop an old database
+   you can read the prisma docs
+
+OTP sending logic 
+
+-generate OTP 
+-call OTP sending API
+-if OTP can't be sent , Response error.
+-save OTP into DB.
+
+
+for Data Seeding inside the package.json
+
+"prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  }

@@ -220,3 +220,25 @@ export const resetConfirmAction = async ({ request }: ActionFunctionArgs) => {
     } else throw error;
   }
 };
+
+//ChangePassword
+
+export const changePasswordAction = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const credentials = {
+    oldPassword: Number(formData.get("oldPassword")),
+    newPassword: Number(formData.get("newPassword")),
+    newConfirmPassword: Number(formData.get("newConfirmPassword")),
+  };
+  try {
+    const response = await authapi.patch("updatePassword", credentials);
+    if (response.status !== 200) {
+      return { error: response?.data || "Change Password Failed." };
+    }
+    return redirect("/");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data || { error: "Change Password Failed !" };
+    } else throw error;
+  }
+};

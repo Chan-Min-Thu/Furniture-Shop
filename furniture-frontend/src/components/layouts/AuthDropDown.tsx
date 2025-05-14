@@ -14,6 +14,13 @@ import {
 
 import type { User } from "@/types";
 import { Icons } from "../Icon";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionTrigger,
+} from "@radix-ui/react-accordion";
+import { AccordionItem } from "../ui/accordion";
+// import ChangePassword from "./ChangePassword";
 
 interface UserProps {
   user: User;
@@ -39,7 +46,7 @@ function AuthDropDown({ user }: UserProps) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
@@ -59,12 +66,40 @@ function AuthDropDown({ user }: UserProps) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to={"#"}>
-            <Icons.gear className="mr-2 size-4" aria-hidden={true} />
-            Settings
-            <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
-          </Link>
+          <Accordion
+            type="single"
+            collapsible
+            className="w-full"
+            defaultValue="item-1"
+          >
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="flex gap-2">
+                <Icons.gear className="mr-2 size-4" aria-hidden={true} />
+                <span>Setting</span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="ml-4 mt-2 flex flex-col space-y-1">
+                  <Button
+                    asChild
+                    variant={"ghost"}
+                    className="flex justify-start"
+                  >
+                    <Link to={""}>Edit Profile</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant={"ghost"}
+                    className="flex justify-start"
+                  >
+                    <Link to={"/changePassword"}>Change Password</Link>
+                  </Button>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </DropdownMenuItem>
+        {/* <ChangePassword /> */}
+
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           {/* <Link to={"/login"}>

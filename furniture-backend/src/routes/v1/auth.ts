@@ -9,6 +9,7 @@ import {
   verifyOtpForgotPassword,
   resetPassword,
   authCheck,
+  updatePassword,
 } from "./../../controllers/authController";
 import { authMiddleware } from "../../middlewares/authMiddleware";
 
@@ -22,6 +23,7 @@ router.post("/logout", logout);
 router.post("/forgotPassword", forgotPassword);
 router.post("/verifyOtpForgotPassword", verifyOtpForgotPassword);
 router.post("/resetPassword", resetPassword);
+router.patch("/updatePassword", updatePassword);
 
 router.get("/auth-check", authMiddleware, authCheck);
 /* ----------In Mobile (in case of refreshtoken)----------- */

@@ -17,7 +17,7 @@ function Products() {
   const category = useFilterStore((state) => state.category);
   console.log(category);
   const types = useFilterStore((state) => state.type);
-  // const rawCategories = searchParams.get("categories");
+  const rawCategories = searchParams.get("categories");
   // const rawTypes = searchParams.get("types");
   // console.log(rawCategories);
   const selectedCategories = category
@@ -26,9 +26,8 @@ function Products() {
         .filter((cat) => !isNaN(cat))
         .map((cat) => cat.toString())
     : [];
-  // const selectedTypes = rawTypes
-  //   ? decodeURIComponent(rawTypes)
-  //       .split(",")
+  const Categories =
+    rawCategories && decodeURIComponent(rawCategories).split(",");
   const selectedTypes = types
     ? types
         .map((type) => Number(type.trim()))
@@ -37,7 +36,11 @@ function Products() {
     : [];
 
   const cat =
-    selectedCategories.length > 0 ? selectedCategories.join(",") : null;
+    selectedCategories.length > 0
+      ? selectedCategories.join(",")
+      : Categories
+        ? Categories.join(",")
+        : null;
   const type = selectedTypes.length > 0 ? selectedTypes.join(",") : null;
   const { data: categoryType } = useSuspenseQuery(categoryAndTypeQuery());
   const {

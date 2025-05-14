@@ -522,6 +522,86 @@ export const logout = async (
   });
 };
 
+export const updatePassword = [
+  // for body checking middleware with express validator
+  body("oldPassword", "Old Password must be 8 digits.").trim().notEmpty(),
+  body("newPassword", "New Password must be 8 digits.").trim().notEmpty(),
+  body("newConfirmPassword", "Confirm Password must be 8 digits.")
+    .trim()
+    .notEmpty(),
+  // callback function;
+  async (req: Request, res: Response, next: NextFunction) => {
+    //first of all checking request
+    const errors = validationResult(req).array({ onlyFirstError: true });
+    if (errors.length > 0) {
+      return next(createError(errors[0].msg, 400, errorCode.invalid));
+    }
+    console.log(req.body);
+    const { oldPassword, newPassword, newConfirmPassword } = req.body;
+
+    const refreshToken = req.cookies ? req.cookies.refreshToken : null;
+    console.log(refreshToken);
+
+    //If you don't have the token,your logout option is meaningless.
+    if (!refreshToken) {
+      return next(
+        createError("You are not authenticated user.", 400, errorCode.invalid)
+      );
+    }
+
+    //Token decoded
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as {
+        id: number;
+        phone: string;
+      };
+    } catch (err) {
+      // wrong token
+      return next(
+        createError("You are not authenticated user.", 400, errorCode.invalid)
+      );
+    }
+    const user = await getUserById(decoded.id);
+    checkUserIfNotExit(user);
+    if (user?.phone !== decoded.phone) {
+      // token decoded phone and database phone check
+      return next(
+        createError("You are not authenticated user.", 400, errorCode.invalid)
+      );
+    }
+
+    //checking password match or not
+    const isMatchPassword = await bcrypt.compare(oldPassword, user!.password);
+    if (!isMatchPassword) {
+      return next(
+        createError("Old Password is wrong.", 400, errorCode.invalid)
+      );
+    }
+    if (newPassword !== newConfirmPassword) {
+      return next(
+        createError(
+          "New Password and Confirm Password are not matched.",
+          400,
+          errorCode.invalid
+        )
+      );
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(newPassword, salt);
+
+    const userData = {
+      password: hashPassword,
+      randomToken: generateToken(),
+    };
+    await updateUser(user!.id, userData);
+
+    res.status(200).json({
+      message: "Successfully updated your password.",
+      userId: user!.id,
+    });
+  },
+];
 export const forgotPassword = [
   body("phone", "Invalid phone number.")
     .trim()
@@ -752,6 +832,7 @@ export const resetPassword = [
       return next(createError("Invalid Token", 401, errorCode.invalid));
     }
     //request is expired.
+    //OTP is alive for 10 minutes
     const isExpired = moment().diff(otpRow?.updatedAt, "minutes") > 10;
     if (isExpired) {
       const error: any = new Error();

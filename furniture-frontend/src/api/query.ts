@@ -21,6 +21,13 @@ const fetchProducts = (q?: string) =>
 const fetchPosts = (q?: string) =>
   api.get(`user/posts/infinite${q ?? ""}`).then((res) => res.data);
 
+const fetchUser = () => api.get("auth-check").then((res) => res.data);
+
+export const userQuery = () => ({
+  queryKey: ["user"],
+  queryFn: fetchUser,
+  staleTime: 5 * 60 * 1000, // 5 min
+});
 export const productQuery = (q?: string) => ({
   queryKey: ["products", q],
   queryFn: () => fetchProducts(q),

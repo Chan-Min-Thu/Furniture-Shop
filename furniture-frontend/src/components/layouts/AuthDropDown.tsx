@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { User } from "@/types";
 import { Icons } from "../Icon";
 import {
   Accordion,
@@ -20,41 +19,44 @@ import {
   AccordionTrigger,
 } from "@radix-ui/react-accordion";
 import { AccordionItem } from "../ui/accordion";
-// import ChangePassword from "./ChangePassword";
+import { User } from "@/types";
 
 interface UserProps {
-  user: User;
+  user: User | null;
 }
 
+const imageUrl = import.meta.env.VITE_IMAGE_URL;
 function AuthDropDown({ user }: UserProps) {
-  const initialName = `${user.firstName.charAt(0) ?? ""} ${user.lastName.charAt(0) ?? ""}`;
-  if (!user) {
-    return (
-      <Button size={"sm"} asChild>
-        <Link to={"/signin"}>Sign In</Link>
-        <span className="sr-only">Sign In</span>
-      </Button>
-    );
-  }
+  // Replace with actual user fetching logicI
+  // const initialName = "Anonymous";
+  // if (!user) {
+  //   return (
+  //     <Button size={"sm"} asChild>
+  //       <Link to={"/signin"}>Sign In</Link>
+  //       <span className="sr-only">Sign In</span>
+  //     </Button>
+  //   );
+  // }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" className="size-8 rounded-full">
           <Avatar>
-            <AvatarImage src={user.imageUrl} alt={user.username ?? ""} />
-            <AvatarFallback>{initialName}</AvatarFallback>
+            <AvatarImage
+              src={imageUrl + user?.image}
+              alt={user?.username ?? ""}
+            />
+            <AvatarFallback>{user?.username}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
-              {user.firstName} {user.lastName}
-            </p>
-            <p className="text-sm leading-none text-muted-foreground">
+            <p className="text-sm font-medium leading-none">{user?.username}</p>
+            {/* <p className="text-sm leading-none text-muted-foreground">
               {user.email}
-            </p>
+            </p> */}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

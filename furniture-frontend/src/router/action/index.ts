@@ -258,6 +258,9 @@ export const updateProfileAction = async ({ request }: ActionFunctionArgs) => {
     if (response.status !== 200) {
       return { error: response?.data || "Update Profile Failed." };
     }
+    // Invalidate the user query to refresh the profile data
+    await queryClient.invalidateQueries({ queryKey: ["user"] });
+    return redirect("/");
   } catch (error) {
     if (error instanceof AxiosError) {
       return error.response?.data || { error: "Update Profile Failed !" };

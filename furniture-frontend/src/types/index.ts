@@ -52,11 +52,11 @@ export type Category = {
 
 export type User = {
   id: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   username: string;
-  email: string;
-  imageUrl: string;
+  email?: string;
+  image: string;
 };
 
 export type Cart = {

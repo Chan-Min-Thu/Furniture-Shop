@@ -3,11 +3,14 @@ import { siteConfig } from "@/config/site";
 import MobileNavigation from "./MobileNavigation";
 import { ModeToggle } from "../ui/mode-toggle";
 import AuthDropDown from "@/components/layouts/AuthDropDown";
-import { User } from "@/data/user";
 import CartSheet from "./CartSheet";
 import ProgressBar from "@/components/layouts/ProgressBar";
+import { User } from "@/types";
 
-function Header() {
+interface HeaderProps {
+  user: User;
+}
+function Header({ user }: HeaderProps) {
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-background">
       <nav className="container mx-auto flex h-16 items-center">
@@ -18,7 +21,7 @@ function Header() {
           <CartSheet />
           <ModeToggle />
           <div className="relative">
-            <AuthDropDown user={User} />
+            <AuthDropDown user={user} />
           </div>
         </div>
       </nav>

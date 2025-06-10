@@ -44,7 +44,6 @@ function ProductFilter({
 }: ProductProps) {
   const setFilter = useFilterStore((state) => state.setFilter);
   const clearFilter = useFilterStore((state) => state.clearFilter);
-  // console.log("selectedCategories", selectedCategories);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {

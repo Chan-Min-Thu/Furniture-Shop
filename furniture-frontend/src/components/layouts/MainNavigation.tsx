@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -22,6 +22,10 @@ interface MainNavigationProps {
 }
 
 function MainNavigation({ items }: MainNavigationProps) {
+  // const [active, setActive] = useState<boolean>(false);
+  // useEffect(() => {
+  //   setActive(()
+  // },[active]);
   return (
     <div className="hidden gap-6 lg:flex">
       <Link to={"/"} className="flex items-center space-x-4">
@@ -68,18 +72,19 @@ function MainNavigation({ items }: MainNavigationProps) {
           )}
           {items?.[0]?.menu &&
             items?.[0].menu.map((item) => (
-              <NavigationMenuItem key={item.title}>
-                <Link to={String(item.href)}>
+              <NavLink
+                key={item.title}
+                to={String(item.href)}
+                className={({ isActive }) => (isActive ? "font-semibold" : "")}
+              >
+                <NavigationMenuItem key={item.title}>
                   <NavigationMenuLink
-                    className={cn(
-                      navigationMenuTriggerStyle(),
-                      "text-lg font-semibold",
-                    )}
+                    className={cn(navigationMenuTriggerStyle(), "")}
                   >
                     {item.title}
                   </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
+                </NavigationMenuItem>
+              </NavLink>
             ))}
         </NavigationMenuList>
       </NavigationMenu>

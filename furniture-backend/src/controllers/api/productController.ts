@@ -131,10 +131,10 @@ export const getProductsByPagination = [
       },
     };
     const cacheKey = `products:${JSON.stringify(req.query)}`;
+    console.log(cacheKey);
     const products = await getOrSetCache(cacheKey, async () => {
       return await getProductLists(options);
     });
-    console.log(products);
     const hasNextPage = products.length > limiter;
 
     if (hasNextPage) {

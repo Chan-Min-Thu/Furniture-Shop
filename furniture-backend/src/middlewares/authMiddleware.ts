@@ -52,7 +52,10 @@ export const authMiddleware = (
   const generateNewToken = async () => {
     let decoded;
     try {
-      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as {
+      decoded = (await jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET!
+      )) as {
         id: number;
         phone: string;
       };
@@ -125,8 +128,8 @@ export const authMiddleware = (
       randomToken: newRefreshToken,
     };
     await updateUser(user.id, newUserData);
-
     // token is kept in the cookie.
+    console.log("newAccessToken", newAccessToken);
     res
       .cookie("accessToken", newAccessToken, {
         httpOnly: true,
@@ -144,6 +147,7 @@ export const authMiddleware = (
     next();
   };
 
+  console.log(generateNewToken);
   if (!accessToken) {
     generateNewToken();
     // const error: any = new Error("Access Token has expired.");

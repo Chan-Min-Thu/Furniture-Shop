@@ -536,11 +536,9 @@ export const updatePassword = [
     if (errors.length > 0) {
       return next(createError(errors[0].msg, 400, errorCode.invalid));
     }
-    console.log(req.body);
     const { oldPassword, newPassword, newConfirmPassword } = req.body;
 
     const refreshToken = req.cookies ? req.cookies.refreshToken : null;
-    console.log(refreshToken);
 
     //If you don't have the token,your logout option is meaningless.
     if (!refreshToken) {

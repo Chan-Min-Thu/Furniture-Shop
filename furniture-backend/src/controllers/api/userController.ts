@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { query, validationResult } from "express-validator";
+import { query, body, validationResult } from "express-validator";
 import { unlink } from "fs";
 import sharp from "sharp";
 import path from "path";
@@ -129,82 +129,88 @@ export const uploadMultiple = async (
 };
 // const userData = {
 
-export const uploadProfileOptimize = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const userId = req.userId as number;
-  const imagefile = req.file;
-  const user = await getUserById(userId);
-  checkUserIfNotExit(user);
-  checkFileExit(imagefile);
-  const splitedFileName = req.file.filename.split(".")[0];
+export const uploadProfileOptimize = [
+  body("firstName", "Name must be with letter").optional(),
+  body("lastName", "Name must be with letters.").optional(),
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    const userId = req.userId as number;
+    console.log("body", req.body);
+    console.log("file", req.file);
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const user = await getUserById(userId);
+    checkUserIfNotExit(user);
+    checkFileExit(req.file);
+    const splitedFileName = req.file.filename.split(".")[0];
 
-  const job = await imageQueue.add(
-    "optimizedImage",
-    {
-      filePath: req.file?.path,
-      fileName: `${splitedFileName}.webp`,
-      width: 300,
-      height: 300,
-      quality: 50,
-    },
-    {
-      attempts: 3,
-      backoff: {
-        type: "exponential",
-        delay: 1000,
+    const job = await imageQueue.add(
+      "optimizedImage",
+      {
+        filePath: req.file?.path,
+        fileName: `${splitedFileName}.webp`,
+        width: 300,
+        height: 300,
+        quality: 50,
       },
+      {
+        attempts: 3,
+        backoff: {
+          type: "exponential",
+          delay: 1000,
+        },
+      }
+    );
+
+    // try {
+    //   const filePath = path.join(
+    //     __dirname,
+    //     "../../..",
+    //     "uploads/images",
+    //     fileName
+    //   );
+    //   await sharp(req.file.buffer)
+    //     .resize(300, 300)
+    //     .webp({ quality: 50 })
+    //     .toFile(filePath);
+    // } catch (err) {
+    //   console.log(err);
+    //   res.status(500).json({ message: "Image Optimization failed." });
+    //   return;
+    // }
+    const optimizedImage = user!.image?.split(".")[0] + ".webp";
+    if (user?.image) {
+      const filePath = path.join(
+        __dirname,
+        "../../..",
+        "/uploads/images",
+        user?.image
+      );
+      const optimizePath = path.join(
+        __dirname,
+        "../../..",
+        "/uploads/optimize",
+        optimizedImage
+      );
+      unlink(filePath, (err) => {
+        console.log(err);
+      });
+      unlink(optimizePath, (err) => {
+        console.log(err);
+      });
     }
-  );
 
-  // try {
-  //   const filePath = path.join(
-  //     __dirname,
-  //     "../../..",
-  //     "uploads/images",
-  //     fileName
-  //   );
-  //   await sharp(req.file.buffer)
-  //     .resize(300, 300)
-  //     .webp({ quality: 50 })
-  //     .toFile(filePath);
-  // } catch (err) {
-  //   console.log(err);
-  //   res.status(500).json({ message: "Image Optimization failed." });
-  //   return;
-  // }
-  const optimizedImage = user!.image?.split(".")[0] + ".webp";
-  if (user?.image) {
-    const filePath = path.join(
-      __dirname,
-      "../../..",
-      "/uploads/images",
-      user?.image
-    );
-    const optimizePath = path.join(
-      __dirname,
-      "../../..",
-      "/uploads/optimize",
-      optimizedImage
-    );
-    unlink(filePath, (err) => {
-      console.log(err);
+    const userData = {
+      image: req.file.filename,
+      firstName: firstName,
+      lastName: lastName,
+    };
+    console.log(userData);
+    const updatedUser = await updateUser(userId, userData);
+
+    res.status(200).json({
+      message: "File uploaded successfully",
+      user: updatedUser,
+      jobId: job.id,
     });
-    unlink(optimizePath, (err) => {
-      console.log(err);
-    });
-  }
-
-  const userData = {
-    image: req.file.filename,
-  };
-  const updatedUser = await updateUser(userId, userData);
-
-  res.status(200).json({
-    message: "File uploaded successfully",
-    user: updatedUser,
-    jobId: job.id,
-  });
-};
+  },
+];

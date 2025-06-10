@@ -23,7 +23,7 @@ export const app = express();
 app.set("view engine", "ejs");
 app.set("views", "src/views");
 
-const whitelist = ["http://example1.com", "http://localhost:5173"];
+const whitelist = ["http://localhost:5173"];
 const corsOptions = {
   origin: function (
     origin: any,

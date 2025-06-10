@@ -32,6 +32,7 @@ import {
   changePasswordAction,
   confirmAction,
   ForgotPasswordAction,
+  updateProfileAction,
   // with React routerI
   // favouriteAction,
   loginAction,
@@ -51,6 +52,7 @@ import VerifyOtp from "./pages/auth/VerifyOtp";
 // import ConfirmPasswordForForgotPasswordForm from "./components/auth/ConfirmPasswordForForgotPasswordForm";
 import ResetConfirmPassword from "./pages/auth/ResetConfirmPassword";
 import ChangePassword from "./pages/auth/ChangePassword";
+import EditProfile from "./pages/auth/EditProfile";
 
 export const router = createBrowserRouter([
   {
@@ -119,6 +121,11 @@ export const router = createBrowserRouter([
         path: "changePassword",
         element: <ChangePassword />,
         action: changePasswordAction,
+      },
+      {
+        path: "editProfile",
+        element: <EditProfile />,
+        action: updateProfileAction,
       },
     ],
   },

@@ -50,7 +50,6 @@ export const registerAction = async ({ request }: ActionFunctionArgs) => {
   const credentials = Object.fromEntries(formData);
   try {
     const response = await authapi.post("register", credentials);
-    console.log(response.data);
     if (response.status !== 200) {
       return { error: response.data || "Sending OTP Failed !" };
     }
@@ -199,7 +198,6 @@ export const VerifyOtpAction = async ({ request }: ActionFunctionArgs) => {
 
 export const resetConfirmAction = async ({ request }: ActionFunctionArgs) => {
   const authStore = useAuthStore.getState();
-  console.log(authStore);
   const formData = await request.formData();
   const credentials = {
     phone: authStore.phone,
@@ -207,7 +205,6 @@ export const resetConfirmAction = async ({ request }: ActionFunctionArgs) => {
     password: formData.get("password"),
   };
   try {
-    console.log(credentials);
     const response = await authapi.post("resetPassword", credentials);
     if (response.status !== 201) {
       return { error: response?.data || "Reset Password Failed." };
@@ -239,6 +236,31 @@ export const changePasswordAction = async ({ request }: ActionFunctionArgs) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       return error.response?.data || { error: "Change Password Failed !" };
+    } else throw error;
+  }
+};
+
+//Update Profile Action
+
+export const updateProfileAction = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+
+  try {
+    const response = await authapi.patch(
+      "/user/profile/upload/optimize",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    if (response.status !== 200) {
+      return { error: response?.data || "Update Profile Failed." };
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data || { error: "Update Profile Failed !" };
     } else throw error;
   }
 };

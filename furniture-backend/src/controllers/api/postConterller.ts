@@ -30,7 +30,6 @@ export const getPost = [
     // checking authenticated user
     const userId = req?.userId;
     const postId = Number(req?.params.id);
-    console.log(postId);
     const user = await getUserById(userId!);
     checkUserIfNotExit(user);
 
@@ -172,7 +171,7 @@ export const getInfinitePostsByPagination = [
     const posts = await getOrSetCache(cacheKey, async () => {
       return await getPostLists(options);
     });
-    console.log(posts);
+
     const hasNextPage = posts.length > limiter;
 
     if (hasNextPage) {

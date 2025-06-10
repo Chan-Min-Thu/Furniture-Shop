@@ -155,7 +155,6 @@ export const getProductLists = async (options: any) => {
 };
 
 export const getProductsByCategoryAndType = async (options: any) => {
-  console.log(options.category);
   return prisma.product.findMany({
     where: {
       category: {

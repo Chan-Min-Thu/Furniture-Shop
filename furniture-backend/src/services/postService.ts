@@ -112,7 +112,6 @@ export const deleteOnePost = async (id: number) => {
 
 /************************************Get Post With Relations ************************ */
 export const getPostWithRelations = async (id: number) => {
-  console.log(id);
   return prisma.post.findUnique({
     where: { id: Number(id) },
     // omit: { createdAt: true },

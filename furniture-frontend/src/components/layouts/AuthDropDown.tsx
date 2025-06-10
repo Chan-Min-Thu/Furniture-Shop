@@ -84,7 +84,7 @@ function AuthDropDown({ user }: UserProps) {
                     variant={"ghost"}
                     className="flex justify-start"
                   >
-                    <Link to={""}>Edit Profile</Link>
+                    <Link to={"/editProfile"}>Edit Profile</Link>
                   </Button>
                   <Button
                     asChild

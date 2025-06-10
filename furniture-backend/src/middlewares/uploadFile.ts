@@ -27,6 +27,8 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: FileFilterCallback
 ) => {
+  console.log("file", file);
+  console.log("req", req.body);
   // Accept images only
   if (
     file.mimetype === "image/jpg" ||

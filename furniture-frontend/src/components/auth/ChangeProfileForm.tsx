@@ -20,25 +20,36 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import PasswordInput from "./PasswordInput";
 import { useState } from "react";
+import { Input } from "../ui/input";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
 
 const formSchema = z.object({
-  oldPassword: z
+  firstName: z
     .string()
-    .min(8, "Password must be 8 digits.")
-    .max(8, "Password must be 8 digits.")
-    .regex(/^\d+$/, "Password must be number."),
-  newPassword: z
+    .regex(/^[a-zA-Z]+$/, "First Name must be string.")
+    .optional(),
+  lastName: z
     .string()
-    .min(8, "New Password must be 8 digits")
-    .max(8, "New Password must be 8 digits.")
-    .regex(/^\d+$/, "Password must be number."),
-  newConfirmPassword: z
-    .string()
-    .min(8, "Comfirm Password must be 8 digits")
-    .max(8, "Confirm Password must be 8 digits.")
-    .regex(/^\d+$/, "Password must be number."),
+    .regex(/^[a-zA-Z]+$/, "Last Name must be string.")
+    .optional(),
+  avatar: z
+    .instanceof(File)
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
+      message: " File size must be less than 10MB",
+    })
+    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
+      message: "Only image files are allowed (jpeg,jpg,png,webg)",
+    })
+    .nullable()
+    .optional(),
 });
 const ChangePasswordForm = ({
   className,
@@ -57,19 +68,25 @@ const ChangePasswordForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      oldPassword: "",
-      newPassword: "",
-      newConfirmPassword: "",
+      firstName: "",
+      lastName: "",
+      avatar: null, // Assuming you will handle file upload separately
     },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    if (values.newPassword !== values.newConfirmPassword) {
-      setClientError("Password do not match.");
-      return;
-    }
     setClientError(null);
+    const formData = new FormData();
+    formData.append("firstName", values.firstName || "");
+    formData.append("lastName", values.lastName || "");
+    if (values.avatar) {
+      formData.append("avatar", values.avatar);
+    }
     //Call Api
-    submit(values, { method: "patch", action: "." });
+    submit(formData, {
+      method: "patch",
+      action: "/editProfile",
+      encType: "multipart/form-data",
+    });
     // "." meaning refer self route.
   }
   return (
@@ -84,12 +101,12 @@ const ChangePasswordForm = ({
             >
               <FormField
                 control={form.control}
-                name="oldPassword"
+                name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Old Password</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <PasswordInput inputMode="numeric" required {...field} />
+                      <Input required {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -97,12 +114,12 @@ const ChangePasswordForm = ({
               />
               <FormField
                 control={form.control}
-                name="newPassword"
+                name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>New Password</FormLabel>
+                    <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <PasswordInput inputMode="numeric" required {...field} />
+                      <Input required {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -110,12 +127,21 @@ const ChangePasswordForm = ({
               />
               <FormField
                 control={form.control}
-                name="newConfirmPassword"
+                name="avatar"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>New Confirm Password</FormLabel>
+                    <FormLabel>Photo Upload</FormLabel>
                     <FormControl>
-                      <PasswordInput inputMode="numeric" required {...field} />
+                      <Input
+                        type="file"
+                        required
+                        onChange={(e) =>
+                          e.target.files?.length
+                            ? field.onChange(e.target.files[0])
+                            : field.onChange(null)
+                        }
+                        className="file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

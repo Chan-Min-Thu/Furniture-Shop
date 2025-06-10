@@ -33,7 +33,6 @@ export const postQuery = (q?: string) => ({
 
 const fetchPostsInfinite = async ({ pageParam = null }) => {
   const page = pageParam ? `?limit=4&cursor=${pageParam}` : "?limit=4";
-  console.log("page", page);
   const response = await api.get(`user/posts/infinite${page}`);
   return response.data;
 };
@@ -82,7 +81,6 @@ const fetchInfiniteProducts = async ({
   types?: null | string;
 }) => {
   let query = pageParam ? `?limit=3&cursor=${pageParam}` : "?limit=3";
-  console.log("page", query);
   if (categories) query += `&category=${categories}`;
   if (types) query += `&type=${types}`;
   const response = await api.get(`user/products${query}`);

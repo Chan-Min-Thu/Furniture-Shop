@@ -2,7 +2,7 @@
 
 A Fullstack furniture web-app where users can read blogs and search,filter,select,purchase products and add to favourite and cart including Sign up and Sign in action.
 
-Build with **TypeScript**, **React**, **Node.js**, **Express**, **PostgreSQL**, and \*\*TailwindCSS\*\*.
+Build with **TypeScript**, **React**, **Node.js**, **Express**, **PostgreSQL**, and **TailwindCSS**.
 
 ## ✨ Features
 
@@ -11,8 +11,7 @@ Build with **TypeScript**, **React**, **Node.js**, **Express**, **PostgreSQL**, 
 - 🔍 Advanced product filtering (material, type)
 - ✅ User authentication (Sign up / Login)
 - 👤 User profile management
-- 📦 Admin dashboard (Manage products and orders)
-- 🗂️ Image upload + optimization (Multer + Sharp)
+- 🗂️ Image upload + optimization (Multer + Sharp in Backend)
 
 ## 🛠️ Tech Stack
 

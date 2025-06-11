@@ -161,7 +161,7 @@ const ChangePasswordForm = ({
                   Cancle
                 </Button>
                 <Button type="submit" className="">
-                  {isSubmitting ? <Loader2 /> : "Change Password"}
+                  {isSubmitting ? <Loader2 /> : "Update Profile"}
                 </Button>
               </div>
             </form>

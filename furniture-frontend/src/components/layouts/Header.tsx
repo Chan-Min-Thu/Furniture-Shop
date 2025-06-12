@@ -9,8 +9,9 @@ import { User } from "@/types";
 
 interface HeaderProps {
   user: User;
+  isLoading: boolean;
 }
-function Header({ user }: HeaderProps) {
+function Header({ user, isLoading }: HeaderProps) {
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-background">
       <nav className="container mx-auto flex h-16 items-center">
@@ -21,7 +22,7 @@ function Header({ user }: HeaderProps) {
           <CartSheet />
           <ModeToggle />
           <div className="relative">
-            <AuthDropDown user={user} />
+            {!isLoading && <AuthDropDown user={user} />}
           </div>
         </div>
       </nav>

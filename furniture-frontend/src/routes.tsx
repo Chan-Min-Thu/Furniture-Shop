@@ -66,6 +66,10 @@ export const router = createBrowserRouter([
         // loader: homeLoader,
       },
       {
+        path: "dashboard",
+        // element:<Home/>
+      },
+      {
         path: "blogs",
         element: (
           <Suspense fallback={<div className="text-center">Loading...</div>}>

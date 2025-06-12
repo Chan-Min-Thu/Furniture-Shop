@@ -43,8 +43,8 @@ function AuthDropDown({ user }: UserProps) {
         <Button variant="secondary" className="size-8 rounded-full">
           <Avatar>
             <AvatarImage
-              src={imageUrl + user?.image}
-              alt={user?.username ?? ""}
+              src={user ? imageUrl + user?.image : "none_profile.webp"}
+              alt={user?.username ?? "Ananymous"}
             />
             <AvatarFallback>{user?.username}</AvatarFallback>
           </Avatar>
@@ -53,7 +53,9 @@ function AuthDropDown({ user }: UserProps) {
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user?.username}</p>
+            <p className="text-sm font-medium leading-none">
+              {user?.username ?? "Ananymous"}
+            </p>
             {/* <p className="text-sm leading-none text-muted-foreground">
               {user.email}
             </p> */}

@@ -129,7 +129,7 @@ export const authMiddleware = (
     };
     await updateUser(user.id, newUserData);
     // token is kept in the cookie.
-    console.log("newAccessToken", newAccessToken);
+    // console.log("newAccessToken", newAccessToken);
     res
       .cookie("accessToken", newAccessToken, {
         httpOnly: true,
@@ -143,7 +143,7 @@ export const authMiddleware = (
         secure: process.env.NODE_ENV === "production",
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
-    req.userId = user.id;
+
     next();
   };
 
@@ -154,34 +154,35 @@ export const authMiddleware = (
     // error.status = 401;
     // error.code = errorCode.accessTokenExpired;
     // return next(error);
-  }
-  /*--------------Verify Token------------*/
-  let decoded;
-  try {
-    decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
-      id: number;
-    };
-    if (isNaN(decoded.id)) {
-      return next(
-        createError(
-          "This accunt has not registered.",
-          401,
-          errorCode.unauthenticated
-        )
-      );
-    }
-    req.userId = decoded.id;
-    next();
-  } catch (error: any) {
-    if ((error.name = "TokenExpiredError")) {
-      generateNewToken();
-      // error.name = "Access token has expired.";
-      // error.status = 401;
-      // error.code = errorCode.accessTokenExpired;
-    } else {
-      return next(
-        createError("Access Token is invalid", 400, errorCode.attack)
-      );
+  } else {
+    /*--------------Verify Token------------*/
+    let decoded;
+    try {
+      decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
+        id: number;
+      };
+      if (isNaN(decoded.id)) {
+        return next(
+          createError(
+            "This accunt has not registered.",
+            401,
+            errorCode.unauthenticated
+          )
+        );
+      }
+      req.userId = decoded.id;
+      next();
+    } catch (error: any) {
+      if ((error.name = "TokenExpiredError")) {
+        generateNewToken();
+        // error.name = "Access token has expired.";
+        // error.status = 401;
+        // error.code = errorCode.accessTokenExpired;
+      } else {
+        return next(
+          createError("Access Token is invalid", 400, errorCode.attack)
+        );
+      }
     }
   }
 };

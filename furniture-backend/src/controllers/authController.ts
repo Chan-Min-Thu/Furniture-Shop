@@ -1,7 +1,7 @@
+import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import moment from "moment";
-import { Request, Response, NextFunction } from "express";
 import { body, Result, validationResult } from "express-validator";
 import { errorCode } from "../config/errorCode";
 import {
@@ -58,7 +58,7 @@ export const register = [
     }
     //getUser by using phone number
     const user = await getUserByPhone(phone);
-    checkUserExit(user);
+    checkUserExit(user); // if user exit,throw error
     //OTP Sending
     const otp = 123456; //For testing
     // const otp = generateOtp();  For useage in production
@@ -67,7 +67,7 @@ export const register = [
     const token = generateToken();
 
     //Check OtpRow with phone number
-    const otpRow = await getOtpByPhone(phone);
+    const otpRow = await getOtpByPhone(phone); // OtpRow can be empty or exit
     let resultData;
 
     if (!otpRow) {
@@ -83,7 +83,7 @@ export const register = [
       resultData = await createOtp(otpData);
     } else {
       const lastOtpRequest = new Date(otpRow.updatedAt).toLocaleDateString();
-      const today = new Date(Date.now()).toLocaleDateString();
+      const today = new Date().toLocaleDateString();
       const isSameDate = today === lastOtpRequest;
       checkOtpErrorIfSameDate(isSameDate, otpRow.error);
 
@@ -898,6 +898,7 @@ export const authCheck = async (
 ) => {
   const userId = req.userId;
   const user = await getUserById(userId!);
+  console.log("user", user);
   checkUserIfNotExit(user);
   res.status(200).json({
     message: "You are authenticated",

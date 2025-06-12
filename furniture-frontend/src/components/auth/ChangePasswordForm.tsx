@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PasswordInput from "./PasswordInput";
 import { useState } from "react";
@@ -70,6 +71,10 @@ const ChangePasswordForm = ({
     setClientError(null);
     //Call Api
     submit(values, { method: "patch", action: "." });
+    toast.success(
+      "Password changed successfully. Please login again with new password.",
+    );
+
     // "." meaning refer self route.
   }
   return (

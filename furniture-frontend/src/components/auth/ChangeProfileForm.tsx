@@ -22,6 +22,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Input } from "../ui/input";
+import { toast } from "sonner";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -87,6 +88,7 @@ const ChangePasswordForm = ({
       action: "/editProfile",
       encType: "multipart/form-data",
     });
+    toast.success("Profile updated successfully!");
     // "." meaning refer self route.
   }
   return (

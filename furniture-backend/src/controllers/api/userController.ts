@@ -204,7 +204,6 @@ export const uploadProfileOptimize = [
       firstName: firstName,
       lastName: lastName,
     };
-    console.log(userData);
     const updatedUser = await updateUser(userId, userData);
 
     res.status(200).json({
